@@ -48,9 +48,9 @@ fn get_random_word<T: AsRef<std::path::Path>>(path: T) -> String {
     let line = file
         .lines()
         .map(Result::unwrap)
-        .filter(|s| s.trim().len() > 5)
+        .filter(|s| s.trim().len() > 0)
         .choose(&mut rng)
-        .expect("The Word list is empty or only has words with less than 5 bytes");
+        .expect("The Word list is empty");
     line.trim().to_lowercase()
 }
 
@@ -157,7 +157,7 @@ impl GameState {
 |
 |
 |
-|         O 
+|         O
 |        /|\\
 |        / \\"
             }
