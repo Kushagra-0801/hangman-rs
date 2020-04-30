@@ -214,6 +214,7 @@ impl GameState {
                 self.letters_tried.push(c);
                 UserInputState::CorrectCharacter
             } else {
+                self.letters_tried.push(c);
                 self.lives -= 1;
                 UserInputState::WrongCharacter
             }
