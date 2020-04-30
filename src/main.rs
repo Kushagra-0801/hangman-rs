@@ -15,16 +15,10 @@ fn main() {
 fn get_word_list() -> std::path::PathBuf {
     use std::env;
     let mut args = env::args().skip(1);
-    let input_file_path = match args.next() {
-        Some(path) => path,
-        None => "input".into(),
-    };
-    match args.next() {
-        Some(_) => {
-            eprintln!("Unknown arguments encountered. Expected at most 1 arg.");
-            std::process::exit(1);
-        }
-        None => (),
+    let input_file_path = args.next().unwrap_or_else(|| "input".into());
+    if let Some(_) = args.next() {
+        eprintln!("Unknown arguments encountered. Expected at most 1 arg.");
+        std::process::exit(1);
     }
     input_file_path.into()
 }
@@ -35,14 +29,11 @@ fn get_random_word<T: AsRef<std::path::Path>>(path: T) -> String {
         fs::File,
         io::{BufRead, BufReader},
     };
-    let file: File = match File::open(path) {
-        Ok(f) => f,
-        Err(e) => {
-            eprintln!("Cannot read file.");
-            eprintln!("{}", e);
-            std::process::exit(1);
-        }
-    };
+    let file: File = File::open(path).unwrap_or_else(|e| {
+        eprintln!("Cannot read file.");
+        eprintln!("{}", e);
+        std::process::exit(1);
+    });
     let file = BufReader::new(file);
     let mut rng = thread_rng();
     let line = file
@@ -97,7 +88,7 @@ impl GameState {
     fn print_lives_and_letters(lives: u8, letters: &[char]) {
         println!("Lives: {}", lives);
         print!("Tried Letters: ");
-        letters.iter().for_each(|c| print!("{} ", c));
+        letters.iter().for_each(|&c| print!("{} ", c));
         println!();
     }
 
